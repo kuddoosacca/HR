@@ -40,208 +40,75 @@ import {
   YAxis,
 } from "recharts";
 
-const kpis = [
-  {
-    label: "Present Today",
-    value: 186,
-    trend: "+4 vs yesterday",
-    icon: CheckCircle2,
-    tone: "text-emerald-600",
-  },
-  {
-    label: "Late Today",
-    value: 12,
-    trend: "-2 vs yesterday",
-    icon: Clock3,
-    tone: "text-amber-600",
-  },
-  {
-    label: "Absent Today",
-    value: 9,
-    trend: "+1 vs yesterday",
-    icon: LifeBuoy,
-    tone: "text-rose-600",
-  },
-  {
-    label: "Overtime Hours (week)",
-    value: 74,
-    trend: "+9.2% this week",
-    icon: Loader2,
-    tone: "text-sky-600",
-  },
-  {
-    label: "Pending Approvals",
-    value: 23,
-    trend: "5 urgent",
-    icon: ShieldCheck,
-    tone: "text-indigo-600",
-  },
-  {
-    label: "Payroll Run Status",
-    value: "Draft",
-    trend: "Next run: Jan 25",
-    icon: Wallet,
-    tone: "text-slate-600",
-  },
-];
+const kpis: Array<{
+  label: string;
+  value: number | string;
+  trend: string;
+  icon: typeof CheckCircle2;
+  tone: string;
+}> = [];
 
-const attendanceTrend = [
-  { day: "Jan 8", present: 162 },
-  { day: "Jan 9", present: 168 },
-  { day: "Jan 10", present: 171 },
-  { day: "Jan 11", present: 166 },
-  { day: "Jan 12", present: 172 },
-  { day: "Jan 13", present: 176 },
-  { day: "Jan 14", present: 179 },
-  { day: "Jan 15", present: 182 },
-  { day: "Jan 16", present: 184 },
-  { day: "Jan 17", present: 188 },
-  { day: "Jan 18", present: 183 },
-  { day: "Jan 19", present: 189 },
-  { day: "Jan 20", present: 190 },
-  { day: "Jan 21", present: 186 },
-];
+const attendanceTrend: Array<{ day: string; present: number }> = [];
 
-const overtimeByDept = [
-  { department: "Engineering", hours: 18 },
-  { department: "Sales", hours: 14 },
-  { department: "Support", hours: 12 },
-  { department: "Operations", hours: 10 },
-  { department: "Finance", hours: 9 },
-  { department: "Marketing", hours: 8 },
-];
+const overtimeByDept: Array<{ department: string; hours: number }> = [];
 
-const employees = [
-  {
-    id: "EMP-1001",
-    name: "Ayesha Malik",
-    department: "Engineering",
-    schedule: "09:00 - 18:00",
-    lastCheckIn: "08:57 AM",
-    status: "Present" as const,
-  },
-  {
-    id: "EMP-1002",
-    name: "Hassan Ali",
-    department: "Support",
-    schedule: "10:00 - 19:00",
-    lastCheckIn: "10:12 AM",
-    status: "Late" as const,
-  },
-  {
-    id: "EMP-1003",
-    name: "Maria Khan",
-    department: "Marketing",
-    schedule: "09:30 - 18:30",
-    lastCheckIn: "09:28 AM",
-    status: "Present" as const,
-  },
-  {
-    id: "EMP-1004",
-    name: "Omar Farooq",
-    department: "Operations",
-    schedule: "08:00 - 17:00",
-    lastCheckIn: "--",
-    status: "Absent" as const,
-  },
-  {
-    id: "EMP-1005",
-    name: "Sarah Iqbal",
-    department: "Finance",
-    schedule: "09:00 - 18:00",
-    lastCheckIn: "09:02 AM",
-    status: "Present" as const,
-  },
-  {
-    id: "EMP-1006",
-    name: "Bilal Ahmed",
-    department: "Sales",
-    schedule: "09:00 - 18:00",
-    lastCheckIn: "09:40 AM",
-    status: "Late" as const,
-  },
-  {
-    id: "EMP-1007",
-    name: "Nida Tariq",
-    department: "Engineering",
-    schedule: "10:00 - 19:00",
-    lastCheckIn: "09:59 AM",
-    status: "Present" as const,
-  },
-  {
-    id: "EMP-1008",
-    name: "Zain Raza",
-    department: "Support",
-    schedule: "09:00 - 18:00",
-    lastCheckIn: "--",
-    status: "Absent" as const,
-  },
-];
+const employees: Array<{
+  id: string;
+  name: string;
+  department: string;
+  schedule: string;
+  lastCheckIn: string;
+  status: "Present" | "Late" | "Absent";
+}> = [];
 
 const requests = {
-  attendance: [
-    {
-      id: "REQ-201",
-      employee: "Ayesha Malik",
-      type: "Clock-in edit",
-      datetime: "Jan 21 • 09:05 AM",
-      status: "Pending",
-    },
-    {
-      id: "REQ-202",
-      employee: "Bilal Ahmed",
-      type: "Clock-out edit",
-      datetime: "Jan 20 • 06:12 PM",
-      status: "Pending",
-    },
-  ],
-  leaves: [
-    {
-      id: "REQ-301",
-      employee: "Sarah Iqbal",
-      type: "Annual leave (2 days)",
-      datetime: "Jan 24 - Jan 25",
-      status: "Pending",
-    },
-    {
-      id: "REQ-302",
-      employee: "Omar Farooq",
-      type: "Sick leave (1 day)",
-      datetime: "Jan 22",
-      status: "Pending",
-    },
-  ],
-  overtime: [
-    {
-      id: "REQ-401",
-      employee: "Hassan Ali",
-      type: "OT approval (3h)",
-      datetime: "Jan 21 • 07:00 PM",
-      status: "Pending",
-    },
-  ],
+  attendance: [] as Array<{
+    id: string;
+    employee: string;
+    type: string;
+    datetime: string;
+    status: string;
+  }>,
+  leaves: [] as Array<{
+    id: string;
+    employee: string;
+    type: string;
+    datetime: string;
+    status: string;
+  }>,
+  overtime: [] as Array<{
+    id: string;
+    employee: string;
+    type: string;
+    datetime: string;
+    status: string;
+  }>,
 };
 
-const complianceAlerts = [
-  {
-    id: "AL-01",
-    title: "Contract renewal due",
-    detail: "5 employees with contracts ending this month",
-    priority: "High",
-  },
-  {
-    id: "AL-02",
-    title: "Policy acknowledgment",
-    detail: "12 employees have not signed the 2026 handbook",
-    priority: "Medium",
-  },
-  {
-    id: "AL-03",
-    title: "Document expiry",
-    detail: "4 IDs expiring in the next 30 days",
-    priority: "Low",
-  },
-];
+const complianceAlerts: Array<{
+  id: string;
+  title: string;
+  detail: string;
+  priority: string;
+}> = [];
+
+const announcements: Array<{
+  id: string;
+  title: string;
+  detail: string;
+  date: string;
+}> = [];
+
+const hrTasks: Array<{
+  id: string;
+  title: string;
+  detail: string;
+  due: string;
+}> = [];
+
+const peopleOps: Array<{ label: string; value: string; sub: string }> = [];
+
+const lifecycle: Array<{ label: string; value: number }> = [];
 
 const quickActions = [
   {
@@ -300,7 +167,17 @@ const quickActions = [
 
 const sidebarItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/hr" },
-  { label: "Employees", icon: Users, href: "/employees" },
+  {
+    label: "Employees",
+    icon: Users,
+    href: "/employees",
+    children: [
+      { label: "Directory", href: "/employees" },
+      { label: "Onboarding", href: "/employees/onboarding" },
+      { label: "Teams", href: "/employees/teams" },
+      { label: "Offboarding", href: "/employees/offboarding" },
+    ],
+  },
   { label: "Attendance", icon: Clock3, href: "/attendance" },
   { label: "Schedules", icon: Calendar, href: "/schedules" },
   { label: "Payroll", icon: Wallet, href: "/payroll" },
@@ -401,20 +278,49 @@ export default function DashboardPage() {
           </div>
 
           <nav className="mt-12 space-y-2">
-            {sidebarItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={classNames(
-                  "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100",
-                  item.href === "/hr" && "bg-slate-900 text-white hover:bg-slate-900",
-                  theme === "dark" && "text-slate-300 hover:bg-slate-800"
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {!sidebarCollapsed && <span>{item.label}</span>}
-              </Link>
-            ))}
+            {sidebarItems.map((item) =>
+              item.children ? (
+                <div key={item.label} className="group">
+                  <Link
+                    href={item.href}
+                    className={classNames(
+                      "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100",
+                      item.href === "/hr" && "bg-slate-900 text-white hover:bg-slate-900",
+                      theme === "dark" && "text-slate-300 hover:bg-slate-800"
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                  </Link>
+                  {!sidebarCollapsed && (
+                    <div className="mt-2 hidden flex-col gap-1 pl-9 group-hover:flex">
+                      {item.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-500 transition hover:bg-slate-100"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={classNames(
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100",
+                    item.href === "/hr" && "bg-slate-900 text-white hover:bg-slate-900",
+                    theme === "dark" && "text-slate-300 hover:bg-slate-800"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  {!sidebarCollapsed && <span>{item.label}</span>}
+                </Link>
+              )
+            )}
           </nav>
 
           <div className="mt-auto flex flex-col gap-2 px-2 pt-6">
@@ -497,20 +403,34 @@ export default function DashboardPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {kpis.map((kpi) => (
-                <Card key={kpi.label}>
+              {kpis.length === 0 ? (
+                <Card>
                   <CardContent className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-sm text-slate-500">{kpi.label}</p>
-                      <p className="mt-2 text-2xl font-semibold">{kpi.value}</p>
-                      <p className="mt-1 text-xs text-slate-500">{kpi.trend}</p>
+                      <p className="text-sm text-slate-500">KPI snapshot</p>
+                      <p className="mt-2 text-lg font-semibold">No data yet</p>
                     </div>
-                    <div className={classNames("rounded-xl bg-slate-100 p-3", kpi.tone)}>
-                      <kpi.icon className="h-5 w-5" />
+                    <div className="rounded-xl bg-slate-100 p-3 text-slate-500">
+                      <CheckCircle2 className="h-5 w-5" />
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              ) : (
+                kpis.map((kpi) => (
+                  <Card key={kpi.label}>
+                    <CardContent className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-sm text-slate-500">{kpi.label}</p>
+                        <p className="mt-2 text-2xl font-semibold">{kpi.value}</p>
+                        <p className="mt-1 text-xs text-slate-500">{kpi.trend}</p>
+                      </div>
+                      <div className={classNames("rounded-xl bg-slate-100 p-3", kpi.tone)}>
+                        <kpi.icon className="h-5 w-5" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
@@ -520,15 +440,21 @@ export default function DashboardPage() {
                   <CardDescription>Present employees for the last 14 days.</CardDescription>
                 </CardHeader>
                 <CardContent className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={attendanceTrend} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="day" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Line type="monotone" dataKey="present" stroke="#0f172a" strokeWidth={2} dot={false} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  {attendanceTrend.length === 0 ? (
+                    <div className="flex h-full items-center justify-center text-sm text-slate-500">
+                      No attendance data yet
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={attendanceTrend} margin={{ top: 10, right: 24, left: 0, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                        <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+                        <YAxis tick={{ fontSize: 12 }} />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="present" stroke="#0f172a" strokeWidth={2} dot={false} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
               </Card>
 
@@ -538,15 +464,21 @@ export default function DashboardPage() {
                   <CardDescription>Top 6 departments this week.</CardDescription>
                 </CardHeader>
                 <CardContent className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={overtimeByDept} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis dataKey="department" tick={{ fontSize: 12 }} />
-                      <YAxis tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Bar dataKey="hours" fill="#1e293b" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {overtimeByDept.length === 0 ? (
+                    <div className="flex h-full items-center justify-center text-sm text-slate-500">
+                      No overtime data yet
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={overtimeByDept} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                        <XAxis dataKey="department" tick={{ fontSize: 12 }} />
+                        <YAxis tick={{ fontSize: 12 }} />
+                        <Tooltip />
+                        <Bar dataKey="hours" fill="#1e293b" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -602,23 +534,120 @@ export default function DashboardPage() {
                   <CardDescription>Proactive reminders to reduce HR risk.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {complianceAlerts.map((alert) => (
-                    <div
-                      key={alert.id}
-                      className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3"
-                    >
-                      <div>
-                        <p className="text-sm font-semibold">{alert.title}</p>
-                        <p className="text-xs text-slate-500">{alert.detail}</p>
-                      </div>
-                      <Badge variant="secondary">{alert.priority}</Badge>
+                  {complianceAlerts.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
+                      No compliance alerts yet
                     </div>
-                  ))}
+                  ) : (
+                    complianceAlerts.map((alert) => (
+                      <div
+                        key={alert.id}
+                        className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3"
+                      >
+                        <div>
+                          <p className="text-sm font-semibold">{alert.title}</p>
+                          <p className="text-xs text-slate-500">{alert.detail}</p>
+                        </div>
+                        <Badge variant="secondary">{alert.priority}</Badge>
+                      </div>
+                    ))
+                  )}
                   <Button variant="outline" className="w-full">
                     View compliance center
                   </Button>
                 </CardContent>
               </Card>
+            </div>
+
+            <div className="grid gap-6 lg:grid-cols-[1.2fr,1fr]">
+              <Card>
+                <CardHeader>
+                  <CardTitle>People Operations</CardTitle>
+                  <CardDescription>Headcount health and lifecycle distribution.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {peopleOps.length === 0 && lifecycle.length === 0 ? (
+                    <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
+                      No people operations data yet
+                    </div>
+                  ) : (
+                    <>
+                      <div className="grid gap-4 sm:grid-cols-3">
+                        {peopleOps.map((item) => (
+                          <div key={item.label} className="rounded-xl border border-slate-200 px-4 py-3">
+                            <p className="text-xs text-slate-500">{item.label}</p>
+                            <p className="mt-2 text-lg font-semibold">{item.value}</p>
+                            <p className="text-xs text-slate-400">{item.sub}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {lifecycle.map((item) => (
+                          <div key={item.label} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                            <div>
+                              <p className="text-sm font-semibold">{item.label}</p>
+                              <p className="text-xs text-slate-500">Employees</p>
+                            </div>
+                            <span className="text-lg font-semibold text-slate-900">{item.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Announcements</CardTitle>
+                    <CardDescription>Keep teams aligned and informed.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {announcements.length === 0 ? (
+                      <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
+                        No announcements yet
+                      </div>
+                    ) : (
+                      announcements.map((item) => (
+                        <div key={item.id} className="rounded-xl border border-slate-200 px-4 py-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold">{item.title}</p>
+                            <span className="text-xs text-slate-400">{item.date}</span>
+                          </div>
+                          <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
+                        </div>
+                      ))
+                    )}
+                    <Button variant="outline" className="w-full">Post announcement</Button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Today’s HR Tasks</CardTitle>
+                    <CardDescription>Priority items for your team.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {hrTasks.length === 0 ? (
+                      <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
+                        No tasks yet
+                      </div>
+                    ) : (
+                      hrTasks.map((task) => (
+                        <div key={task.id} className="flex items-start justify-between rounded-xl border border-slate-200 px-4 py-3">
+                          <div>
+                            <p className="text-sm font-semibold">{task.title}</p>
+                            <p className="text-xs text-slate-500">{task.detail}</p>
+                          </div>
+                          <Badge variant="outline">{task.due}</Badge>
+                        </div>
+                      ))
+                    )}
+                    <Button variant="outline" className="w-full">View task board</Button>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[2fr,1fr]">
@@ -679,48 +708,56 @@ export default function DashboardPage() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {pageSlice.map((employee) => (
-                        <TableRow key={employee.id}>
-                          <TableCell>
-                            <div>
-                              <p className="text-sm font-semibold">{employee.name}</p>
-                              <p className="text-xs text-slate-500">{employee.id}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>{employee.department}</TableCell>
-                          <TableCell>{employee.schedule}</TableCell>
-                          <TableCell>{employee.lastCheckIn}</TableCell>
-                          <TableCell>
-                            <Badge className={statusBadgeStyles[employee.status]}>
-                              {employee.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="gap-1">
-                                  Actions
-                                  <ChevronDown className="h-3 w-3" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <UserRound className="mr-2 h-4 w-4" />
-                                  View
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Pencil className="mr-2 h-4 w-4" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <ShieldCheck className="mr-2 h-4 w-4" />
-                                  Reset PIN
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
+                      {pageSlice.length === 0 ? (
+                        <TableRow>
+                          <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={6}>
+                            No employees yet
+                          </td>
                         </TableRow>
-                      ))}
+                      ) : (
+                        pageSlice.map((employee) => (
+                          <TableRow key={employee.id}>
+                            <TableCell>
+                              <div>
+                                <p className="text-sm font-semibold">{employee.name}</p>
+                                <p className="text-xs text-slate-500">{employee.id}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell>{employee.department}</TableCell>
+                            <TableCell>{employee.schedule}</TableCell>
+                            <TableCell>{employee.lastCheckIn}</TableCell>
+                            <TableCell>
+                              <Badge className={statusBadgeStyles[employee.status]}>
+                                {employee.status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="gap-1">
+                                    Actions
+                                    <ChevronDown className="h-3 w-3" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem>
+                                    <UserRound className="mr-2 h-4 w-4" />
+                                    View
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    <Pencil className="mr-2 h-4 w-4" />
+                                    Edit
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem>
+                                    <ShieldCheck className="mr-2 h-4 w-4" />
+                                    Reset PIN
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
                     </TableBody>
                   </Table>
 
@@ -796,26 +833,32 @@ function RequestList({
 }) {
   return (
     <div className="mt-4 space-y-4">
-      {items.map((item) => (
-        <div key={item.id} className="rounded-xl border border-slate-200 px-4 py-3">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-sm font-semibold">{item.employee}</p>
-              <p className="text-xs text-slate-500">{item.type}</p>
-              <p className="text-xs text-slate-400">{item.datetime}</p>
-            </div>
-            <Badge variant="outline">{item.status}</Badge>
-          </div>
-          <div className="mt-3 flex gap-2">
-            <Button size="sm" className="flex-1">
-              Approve
-            </Button>
-            <Button size="sm" variant="outline" className="flex-1">
-              Reject
-            </Button>
-          </div>
+      {items.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
+          No requests yet
         </div>
-      ))}
+      ) : (
+        items.map((item) => (
+          <div key={item.id} className="rounded-xl border border-slate-200 px-4 py-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-sm font-semibold">{item.employee}</p>
+                <p className="text-xs text-slate-500">{item.type}</p>
+                <p className="text-xs text-slate-400">{item.datetime}</p>
+              </div>
+              <Badge variant="outline">{item.status}</Badge>
+            </div>
+            <div className="mt-3 flex gap-2">
+              <Button size="sm" className="flex-1">
+                Approve
+              </Button>
+              <Button size="sm" variant="outline" className="flex-1">
+                Reject
+              </Button>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }
